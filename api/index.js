@@ -16,7 +16,7 @@ mongoose
 
 const app = express();
 
-app.use(express.json()); // We need to allow to send JSON
+app.use(express.json());
 
 app.listen(3000, () => {
   console.log('Server is running on port 3000!');
@@ -24,3 +24,14 @@ app.listen(3000, () => {
 
 app.use('/api/user', userRouter);
 app.use('/api/auth', authRouter);
+
+app.use((err, req, res, next) => {
+  //middleware to handle errors
+  const statusCode = err.statusCode || 500;
+  const message = err.message || 'Internal Server Error';
+  return res.status(statusCode).json({
+    success: false,
+    statusCode,
+    message, //the same name so no need to assign
+  });
+});
